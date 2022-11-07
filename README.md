@@ -9,13 +9,13 @@ This schema design helps with simplifying complex queries and allows for greater
 
 
 ### Project Structure
-sql_queries.py
+**sql_queries.py**\
 Contains the drop, creation and insertion statements from given datasets and a select query that gets the songid and artistid. 
 
-create_tables.py
+**create_tables.py**\
 Contains the methods that execute the drop and create table queries found in the sql_queries file .
 
-etl.py
+**etl.py**\
 Extracts data from files and loads it into sparkifydb
 
 ## Usage
