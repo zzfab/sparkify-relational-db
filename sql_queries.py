@@ -11,52 +11,57 @@ time_table_drop = "DROP TABLE IF EXISTS time"
 songplay_table_create = """
 CREATE TABLE IF NOT EXISTS song_play (
     songplay_id SERIAL PRIMARY KEY,
-    start_time varchar, 
-    user_id varchar, 
+    start_time TIMESTAMP  NOT NULL, 
+    user_id VARCHAR NOT NULL, 
     level varchar, 
-    song_id varchar, 
-    artist_id varchar, 
+    song_id varchar NOT NULL, 
+    artist_id varchar NOT NULL, 
     session_id int, 
     location varchar, 
-    user_agent varchar)
+    user_agent varchar
+) 
 """
 
 user_table_create = """
 CREATE TABLE IF NOT EXISTS users (
-    user_id varchar, 
+    user_id VARCHAR PRIMARY KEY, 
     first_name varchar, 
     last_name varchar, 
     gender varchar, 
     level varchar
-)"""
+) """
 
 song_table_create = """
 CREATE TABLE IF NOT EXISTS songs (
-    song_id varchar, 
+    song_id varchar PRIMARY KEY, 
     title varchar, 
     artist_id varchar, 
     year int, 
-    duration numeric)"""
+    duration float
+) 
+"""
 
 artist_table_create = """
 CREATE TABLE IF NOT EXISTS artists (
-    artist_id varchar, 
+    artist_id varchar PRIMARY KEY, 
     name varchar, 
     location varchar, 
     latitude numeric, 
     longitude numeric
-    )
+) 
 """
 
 time_table_create = """
 CREATE TABLE IF NOT EXISTS time (
-    start_time varchar, 
+    start_time TIMESTAMP, 
     hour int, 
     day int, 
     week int, 
     month int, 
     year int, 
-    weekday varchar)"""
+    weekday varchar
+) 
+"""
 
 # INSERT RECORDS
 
@@ -70,7 +75,8 @@ INSERT INTO song_play (
     session_id, 
     location, 
     user_agent
-) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) 
+"""
 
 user_table_insert = """ 
 INSERT INTO users(
@@ -79,7 +85,7 @@ INSERT INTO users(
     last_name, 
     gender, 
     level
-) VALUES (%s, %s, %s, %s, %s)
+) VALUES (%s, %s, %s, %s, %s) ON CONFLICT (user_id) DO UPDATE SET level=EXCLUDED.level
 """
 
 song_table_insert = """
@@ -89,7 +95,8 @@ INSERT INTO songs (
     artist_id, 
     year, 
     duration
-) VALUES (%s, %s, %s, %s, %s)"""
+) VALUES (%s, %s, %s, %s, %s)  ON CONFLICT (song_id) DO UPDATE SET title=EXCLUDED.title
+"""
 
 artist_table_insert = """
 INSERT INTO artists (
@@ -98,7 +105,7 @@ INSERT INTO artists (
     location, 
     latitude, 
     longitude
-) VALUES (%s, %s, %s, %s, %s)
+) VALUES (%s, %s, %s, %s, %s) ON CONFLICT (artist_id) DO UPDATE SET name=EXCLUDED.name
 """
 
 time_table_insert = """
@@ -110,7 +117,8 @@ INSERT INTO time (
     month, 
     year, 
     weekday
-) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+) VALUES (%s, %s, %s, %s, %s, %s, %s)
+"""
 
 # FIND SONGS
 song_select = """
