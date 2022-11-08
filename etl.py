@@ -49,7 +49,7 @@ def process_log_file(cur, filepath):
     
     # insert time data records
 
-    time_data = ([t['ts'], t['ts'].dt.hour, t['ts'].dt.day, t['ts'].dt.week, t['ts'].dt.month, t['ts'].dt.year,
+    time_data = ([pd.to_datetime(t['ts']), t['ts'].dt.hour, t['ts'].dt.day, t['ts'].dt.week, t['ts'].dt.month, t['ts'].dt.year,
                   t['ts'].dt.day_name()])
     column_labels = (['timestamp', 'hour', 'day', 'week_of_year', 'month', 'year', 'weekday'])
     time_df = pd.DataFrame(dict(zip(column_labels, time_data)))
@@ -59,7 +59,7 @@ def process_log_file(cur, filepath):
 
     # load user table
     user_col_list = ['userId', 'firstName', 'lastName', 'gender', 'level']
-    user_df = t.filter(user_col_list).drop_duplicates()
+    user_df = t.filter(user_col_list)
 
     # insert user records
     for i, row in user_df.iterrows():
