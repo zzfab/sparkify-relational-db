@@ -19,12 +19,12 @@ def process_song_file(cur, filepath):
     df = pd.read_json(filepath,lines=True)
     song_list = ['song_id', 'title', 'artist_id', 'duration', 'year']
     # insert song record
-    song_data = df[song_list].values.tolist()[0]
+    song_data = df[song_list].values[0].tolist()
     cur.execute(song_table_insert, song_data)
     
     # insert artist record
     artist_list = ['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']
-    artist_data = df[artist_list].values.tolist()[0]
+    artist_data = df[artist_list].values[0].tolist()
     cur.execute(artist_table_insert, artist_data)
 
 
@@ -42,24 +42,24 @@ def process_log_file(cur, filepath):
     df = pd.read_json(filepath, lines=True)
 
     # filter by NextSong action
-    t = df[df['page'] == "NextSong"].copy(deep=True)
+    df = df.loc[df['page']=='NextSong']
 
     # convert timestamp column to datetime
-    t['ts'] = pd.to_datetime(df['ts'])
-    
+    df['ts'] = df['ts'].apply(pd.to_datetime)
+    t = df
     # insert time data records
 
-    time_data = ([pd.to_datetime(t['ts']), t['ts'].dt.hour, t['ts'].dt.day, t['ts'].dt.week, t['ts'].dt.month, t['ts'].dt.year,
+    time_data = ([t['ts'], t['ts'].dt.hour, t['ts'].dt.day, t['ts'].dt.week, t['ts'].dt.month, t['ts'].dt.year,
                   t['ts'].dt.day_name()])
     column_labels = (['timestamp', 'hour', 'day', 'week_of_year', 'month', 'year', 'weekday'])
     time_df = pd.DataFrame(dict(zip(column_labels, time_data)))
-
+    #time_df['timestamp'] = time_data['timestamp'].apply(pd.to_datetime)
     for i, row in time_df.iterrows():
         cur.execute(time_table_insert, list(row))
 
     # load user table
     user_col_list = ['userId', 'firstName', 'lastName', 'gender', 'level']
-    user_df = t.filter(user_col_list)
+    user_df = df.filter(user_col_list)
 
     # insert user records
     for i, row in user_df.iterrows():
@@ -78,7 +78,7 @@ def process_log_file(cur, filepath):
             songid, artistid = None, None
 
         # insert songplay record
-        songplay_data = ([pd.to_datetime(row.ts), row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent])
+        songplay_data = ([row.ts, row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent])
         cur.execute(songplay_table_insert, songplay_data)
 
 

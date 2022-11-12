@@ -35,7 +35,11 @@ python etl.py
 
 ### Example Query
 This query selects all songs with a title containing the word "World"
- ```
+```
 select *
 from songs
-where title like '%World%```
+where title like '%World%
+```
+
+### ERD
+![Entity Relationship Diagramm](sparkifydb_erd.png)

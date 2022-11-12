@@ -11,11 +11,11 @@ time_table_drop = "DROP TABLE IF EXISTS time"
 songplay_table_create = """
 CREATE TABLE IF NOT EXISTS song_play (
     songplay_id SERIAL PRIMARY KEY,
-    start_time TIMESTAMP NOT NULL, 
-    user_id VARCHAR NOT NULL, 
+    start_time timestamp REFERENCES time NOT NULL , 
+    user_id VARCHAR REFERENCES users NOT NULL , 
     level varchar, 
-    song_id varchar, 
-    artist_id varchar NOT NULL, 
+    song_id varchar REFERENCES songs  , 
+    artist_id varchar REFERENCES artists  , 
     session_id int, 
     location varchar, 
     user_agent varchar
@@ -36,7 +36,7 @@ song_table_create = """
 CREATE TABLE IF NOT EXISTS songs (
     song_id varchar PRIMARY KEY, 
     title varchar, 
-    artist_id varchar, 
+    artist_id varchar NOT NULL , 
     year int, 
     duration float
 ) ;
@@ -131,7 +131,9 @@ song_select = """
 SELECT songs.song_id, artists.artist_id 
 FROM songs 
     JOIN artists ON songs.artist_id = artists.artist_id 
-where title = 'Pink World'
+WHERE SONGS.title = %s 
+AND ARTISTS.name = %s 
+AND SONGS.duration = %s
 """
 
 # QUERY LISTS
