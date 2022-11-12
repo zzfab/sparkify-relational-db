@@ -133,7 +133,6 @@ FROM songs
     JOIN artists ON songs.artist_id = artists.artist_id 
 WHERE SONGS.title = %s 
 AND ARTISTS.name = %s 
-AND SONGS.duration = %s
 """
 
 # QUERY LISTS
